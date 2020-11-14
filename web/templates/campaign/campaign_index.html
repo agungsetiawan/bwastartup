@@ -1,0 +1,37 @@
+{{ define "content" }}
+
+<h2 class="mb-4">List of Campaign</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table mb-0">
+            <thead class="thead-light">
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Short Description</th>
+                    <th>Goal Amount</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .campaigns }}
+                <tr>
+                    <td>
+                        {{ if .CampaignImages }}
+                            <img width="60" src="/{{ (index .CampaignImages 0).FileName }}" class="img-fluid img-thumbnail">
+                        {{ end }}
+                    </td>
+                    <td>{{ .Name }}</td>
+                    <td>{{ .ShortDescription }}</td>
+                    <td>{{ .GoalAmount }}</td>
+                    <td><a href="/campaigns/{{ .ID }}"><i class="fa fa-edit"></i><a></td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{{ end }}
