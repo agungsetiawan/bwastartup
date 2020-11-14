@@ -34,7 +34,10 @@ func (h *campaignHandler) New(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "campaign_new.html", gin.H{"users": users})
+	input := campaign.FormCreateCampaignInput{}
+	input.Users = users
+
+	c.HTML(http.StatusOK, "campaign_new.html", input)
 }
 
 func (h *campaignHandler) Create(c *gin.Context) {
@@ -42,7 +45,14 @@ func (h *campaignHandler) Create(c *gin.Context) {
 
 	err := c.ShouldBind(&input)
 	if err != nil {
+		users, e := h.userService.GetAllUsers()
+		if e != nil {
+			c.HTML(http.StatusInternalServerError, "error.html", nil)
+			return
+		}
+
 		input.Error = err
+		input.Users = users
 		c.HTML(http.StatusOK, "campaign_new.html", input)
 	}
 

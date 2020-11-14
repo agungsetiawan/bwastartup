@@ -22,6 +22,7 @@ type FormCreateCampaignInput struct {
 	GoalAmount       int    `form:"goal_amount" binding:"required"`
 	Perks            string `form:"perks" binding:"required"`
 	UserID           int    `form:"user_id" binding:"required"`
+	Users            []user.User
 	Error            error
 }
 
