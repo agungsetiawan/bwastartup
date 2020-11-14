@@ -52,13 +52,20 @@ func (h *userHandler) Edit(c *gin.Context) {
 	idParam := c.Param("id")
 	id, _ := strconv.Atoi(idParam)
 
-	user, err := h.userService.GetUserByID(id)
+	existingUser, err := h.userService.GetUserByID(id)
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", nil)
 		return
 	}
 
-	c.HTML(http.StatusOK, "user_edit.html", user)
+	var input user.UpdateUserInput
+
+	input.ID = existingUser.ID
+	input.Name = existingUser.Name
+	input.Email = existingUser.Email
+	input.Occupation = existingUser.Occupation
+
+	c.HTML(http.StatusOK, "user_edit.html", input)
 }
 
 func (h *userHandler) Update(c *gin.Context) {
@@ -69,7 +76,9 @@ func (h *userHandler) Update(c *gin.Context) {
 
 	err := c.ShouldBind(&input)
 	if err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", nil)
+		input.ID = id
+		input.Error = err
+		c.HTML(http.StatusOK, "user_edit.html", input)
 		return
 	}
 

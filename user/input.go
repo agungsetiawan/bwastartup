@@ -8,9 +8,11 @@ type RegisterUserInput struct {
 }
 
 type UpdateUserInput struct {
+	ID         int    `json:"id" form:"id"`
 	Name       string `json:"name" form:"name" binding:"required"`
 	Occupation string `json:"occupation" form:"occupation" binding:"required"`
 	Email      string `json:"email" form:"email" binding:"required,email"`
+	Error      error
 }
 
 type LoginInput struct {
