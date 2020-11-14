@@ -31,15 +31,23 @@ func (h *userHandler) New(c *gin.Context) {
 }
 
 func (h *userHandler) Create(c *gin.Context) {
-	var input user.RegisterUserInput
+	var input user.CreateUserInput
 
 	err := c.ShouldBind(&input)
 	if err != nil {
-		c.HTML(http.StatusInternalServerError, "error.html", nil)
+		input.Error = err
+		c.HTML(http.StatusOK, "user_new.html", input)
 		return
 	}
 
-	_, err = h.userService.RegisterUser(input)
+	var registerInput user.RegisterUserInput
+
+	registerInput.Name = input.Name
+	registerInput.Email = input.Email
+	registerInput.Occupation = input.Occupation
+	registerInput.Password = input.Password
+
+	_, err = h.userService.RegisterUser(registerInput)
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "error.html", nil)
 		return

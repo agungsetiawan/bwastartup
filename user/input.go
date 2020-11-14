@@ -7,6 +7,15 @@ type RegisterUserInput struct {
 	Password   string `json:"password" form:"password" binding:"required"`
 }
 
+type CreateUserInput struct {
+	ID         int    `json:"id" form:"id"`
+	Name       string `json:"name" form:"name" binding:"required"`
+	Occupation string `json:"occupation" form:"occupation" binding:"required"`
+	Email      string `json:"email" form:"email" binding:"required,email"`
+	Password   string `json:"password" form:"password" binding:"required"`
+	Error      error
+}
+
 type UpdateUserInput struct {
 	ID         int    `json:"id" form:"id"`
 	Name       string `json:"name" form:"name" binding:"required"`
