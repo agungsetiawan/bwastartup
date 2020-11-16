@@ -19,6 +19,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/multitemplate"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -53,6 +55,9 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 
+	cookieStore := cookie.NewStore([]byte(auth.SECRET_KEY))
+	router.Use(sessions.Sessions("bwastartup", cookieStore))
+
 	router.LoadHTMLGlob("web/templates/**/*")
 	router.HTMLRender = loadTemplates("./web/templates")
 
@@ -80,24 +85,24 @@ func main() {
 	api.POST("/transactions", authMiddleware(authService, userService), transactionHandler.CreateTransaction)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
-	router.GET("/users", userWebHandler.Index)
-	router.GET("/users/new", userWebHandler.New)
-	router.POST("/users", userWebHandler.Create)
-	router.GET("/users/edit/:id", userWebHandler.Edit)
-	router.POST("/users/update/:id", userWebHandler.Update)
-	router.GET("/users/avatar/:id", userWebHandler.NewAvatar)
-	router.POST("/users/avatar/:id", userWebHandler.CreateAvatar)
+	router.GET("/users", authAdminMiddleware(userService), userWebHandler.Index)
+	router.GET("/users/new", authAdminMiddleware(userService), userWebHandler.New)
+	router.POST("/users, authAdminMiddleware(userService)", userWebHandler.Create)
+	router.GET("/users/edit/:id", authAdminMiddleware(userService), userWebHandler.Edit)
+	router.POST("/users/update/:id", authAdminMiddleware(userService), userWebHandler.Update)
+	router.GET("/users/avatar/:id", authAdminMiddleware(userService), userWebHandler.NewAvatar)
+	router.POST("/users/avatar/:id", authAdminMiddleware(userService), userWebHandler.CreateAvatar)
 
-	router.GET("/campaigns", campaignWebHandler.Index)
-	router.GET("/campaigns/new", campaignWebHandler.New)
-	router.POST("/campaigns", campaignWebHandler.Create)
-	router.GET("/campaigns/image/:id", campaignWebHandler.NewImage)
-	router.POST("/campaigns/image/:id", campaignWebHandler.CreateImage)
-	router.GET("/campaigns/edit/:id", campaignWebHandler.Edit)
-	router.POST("/campaigns/update/:id", campaignWebHandler.Update)
-	router.GET("/campaigns/show/:id", campaignWebHandler.Show)
+	router.GET("/campaigns", authAdminMiddleware(userService), campaignWebHandler.Index)
+	router.GET("/campaigns/new", authAdminMiddleware(userService), campaignWebHandler.New)
+	router.POST("/campaigns", authAdminMiddleware(userService), campaignWebHandler.Create)
+	router.GET("/campaigns/image/:id", authAdminMiddleware(userService), campaignWebHandler.NewImage)
+	router.POST("/campaigns/image/:id", authAdminMiddleware(userService), campaignWebHandler.CreateImage)
+	router.GET("/campaigns/edit/:id", authAdminMiddleware(userService), campaignWebHandler.Edit)
+	router.POST("/campaigns/update/:id", authAdminMiddleware(userService), campaignWebHandler.Update)
+	router.GET("/campaigns/show/:id", authAdminMiddleware(userService), campaignWebHandler.Show)
 
-	router.GET("/transactions", transactionWebHandler.Index)
+	router.GET("/transactions", authAdminMiddleware(userService), transactionWebHandler.Index)
 
 	router.Run()
 }
@@ -143,6 +148,18 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		}
 
 		c.Set("currentUser", user)
+	}
+}
+
+func authAdminMiddleware(userService user.Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		session := sessions.Default(c)
+
+		userIDSession := session.Get("userID")
+		if userIDSession == nil {
+			c.Redirect(http.StatusFound, "/login")
+			return
+		}
 	}
 }
 
