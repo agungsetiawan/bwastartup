@@ -45,7 +45,7 @@ func main() {
 	campaignHandler := handler.NewCampaignHandler(campaignService)
 	transactionHandler := handler.NewTransactionHandler(transactionService)
 
-	userWebHandler := webHandler.NewUserHandler()
+	userWebHandler := webHandler.NewUserHandler(userService)
 
 	router := gin.Default()
 	router.Use(cors.Default())
