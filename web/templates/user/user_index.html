@@ -1,6 +1,8 @@
 {{ define "content" }}
 <h2 class="mb-4">List of User</h2>
 
+<a href="/users/new" class="btn btn-primary mb-3"><i class="fa fa-plus"></i> New User</a>
+
 <div class="card mb-4">
     <div class="card-body">
         <table class="table mb-0">
@@ -10,6 +12,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Occupation</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -19,6 +22,7 @@
                     <td>{{ .Name }}</td>
                     <td>{{ .Email }}</td>
                     <td>{{ .Occupation }}</td>
+                    <td><a href="/users/edit/{{ .ID }}"><i class="fa fa-edit"></i></a></td>
                 </tr>
                 {{ end }}
             </tbody>
