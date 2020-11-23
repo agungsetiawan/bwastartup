@@ -1,0 +1,46 @@
+{{ define "content" }}
+
+<h2 class="mb-4">Campaign</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" disabled class="form-control" value="{{ .Name }}">
+            </div>
+
+            <div class="form-group">
+                <label for="short_description">Short Description</label>
+                <input type="text" name="short_description" placeholder="Enter short description" disabled class="form-control" value="{{ .ShortDescription }}">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" cols="30" rows="10" placeholder="Enter description" disabled class="form-control">{{ .Description }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="goal_amount">Goal Amount</label>
+                <input type="text" name="goal_amount" placeholder="Enter goal amount" disabled class="form-control" value="{{ .GoalAmountFormatIDR }}">
+            </div>
+
+            <div class="form-group">
+                <label for="perks">Perks</label>
+                <input type="text" name="perks" placeholder="Enter perks (comma separated)" disabled class="form-control" value="{{ .Perks }}">
+            </div>
+
+            <div class="form-group">
+                <label for="backer_count">Backer Count</label>
+                <input type="text" name="backer_count" disabled class="form-control" value="{{ .BackerCount }}">
+            </div>
+
+            <div class="form-group">
+                <label for="current_amount">Current Amount</label>
+                <input type="text" name="current_amount" disabled class="form-control" value="{{ .CurrentAmountFormatIDR }}">
+            </div>
+        </form>
+    </div>
+</div>
+
+{{ end }}

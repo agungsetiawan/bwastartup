@@ -1,0 +1,46 @@
+{{ define "content" }}
+
+<h2 class="mb-4">Edit Campaign</h2>
+
+{{ if .Error }}
+<div class="alert alert-danger">
+    {{ .Error }}
+</div>
+{{ end }}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form action="/campaigns/update/{{ .ID }}" method="POST">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" placeholder="Enter name" required class="form-control" value="{{ .Name }}">
+            </div>
+
+            <div class="form-group">
+                <label for="short_description">Short Description</label>
+                <input type="text" name="short_description" placeholder="Enter short description" required class="form-control" value="{{ .ShortDescription }}">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" cols="30" rows="10" placeholder="Enter description" required class="form-control">{{ .Description }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="goal_amount">Goal Amount</label>
+                <input type="number" name="goal_amount" placeholder="Enter goal amount" required class="form-control" value="{{ .GoalAmount }}">
+            </div>
+
+            <div class="form-group">
+                <label for="perks">Perks</label>
+                <input type="text" name="perks" placeholder="Enter perks (comma separated)" required class="form-control" value="{{ .Perks }}">
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{ end }}

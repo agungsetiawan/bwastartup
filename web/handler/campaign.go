@@ -136,3 +136,81 @@ func (h *campaignHandler) CreateImage(c *gin.Context) {
 
 	c.Redirect(http.StatusFound, "/campaigns")
 }
+
+func (h *campaignHandler) Edit(c *gin.Context) {
+	idParam := c.Param("id")
+	id, _ := strconv.Atoi(idParam)
+
+	existingCampaign, err := h.campaignService.GetCampaignByID(campaign.GetCampaignDetailInput{ID: id})
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "error.html", nil)
+		return
+	}
+
+	input := campaign.FormUpdateCampaignInput{}
+	input.ID = existingCampaign.ID
+	input.Name = existingCampaign.Name
+	input.ShortDescription = existingCampaign.ShortDescription
+	input.Description = existingCampaign.Description
+	input.GoalAmount = existingCampaign.GoalAmount
+	input.Perks = existingCampaign.Perks
+
+	c.HTML(http.StatusOK, "campaign_edit.html", input)
+}
+
+func (h *campaignHandler) Update(c *gin.Context) {
+	idParam := c.Param("id")
+	id, _ := strconv.Atoi(idParam)
+
+	var input campaign.FormUpdateCampaignInput
+
+	err := c.ShouldBind(&input)
+	if err != nil {
+		input.Error = err
+		input.ID = id
+		c.HTML(http.StatusInternalServerError, "error.html", nil)
+		return
+	}
+
+	existingCampaign, err := h.campaignService.GetCampaignByID(campaign.GetCampaignDetailInput{ID: id})
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "error.html", nil)
+		return
+	}
+
+	userID := existingCampaign.UserID
+
+	userCampaign, err := h.userService.GetUserByID(userID)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "error.html", nil)
+		return
+	}
+
+	updateInput := campaign.CreateCampaignInput{}
+	updateInput.Name = input.Name
+	updateInput.ShortDescription = input.ShortDescription
+	updateInput.Description = input.Description
+	updateInput.GoalAmount = input.GoalAmount
+	updateInput.Perks = input.Perks
+	updateInput.User = userCampaign
+
+	_, err = h.campaignService.UpdateCampaign(campaign.GetCampaignDetailInput{ID: id}, updateInput)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "error.html", nil)
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/campaigns")
+}
+
+func (h *campaignHandler) Show(c *gin.Context) {
+	idParam := c.Param("id")
+	id, _ := strconv.Atoi(idParam)
+
+	existingCampaign, err := h.campaignService.GetCampaignByID(campaign.GetCampaignDetailInput{ID: id})
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "error.html", nil)
+	}
+
+	c.HTML(http.StatusOK, "campaign_show.html", existingCampaign)
+}
