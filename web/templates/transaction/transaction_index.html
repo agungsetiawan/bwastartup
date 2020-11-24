@@ -1,0 +1,28 @@
+{{ define "content" }}
+
+<h2 class="mb-4">List of Transaction</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table mb-0">
+            <thead class="thead-light">
+                <tr>
+                    <th>Campaign Name</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .transactions }}
+                <tr>
+                    <td>{{ .Campaign.Name }}</td>
+                    <td>{{ .AmountFormatIDR }}</td>
+                    <td>{{ .Status }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{ end }}
